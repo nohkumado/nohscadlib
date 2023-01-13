@@ -58,6 +58,16 @@ circleround = [
   echo("w: ", normWinkel(w=490));
 
   echo("höhensatz: ^: 1", hs_euklid(mode = "hp", h=70.12, p= 1.1));
+  k1=  [0,0,10];
+  k2=  [-30,-10,5];
+  ot = outerTangente(c1 = [k1[0],k1[1]], r1=k1[2], c2=[k2[0],k2[1]], r2=k2[2]);
+  echo("Äussere Tangent: :k1", ot);
+  cube([100,1,5], center = true);  //xachse
+  cube([1,100,5], center = true);  //yachse
+  translate([k1[0],k1[1],0]) circle(r=k1[2]);
+  translate([k2[0],k2[1],0]) circle(r=k2[2]);
+  translate([k1[0],k1[1],0]) rotate([0,0,ot[3]])cube([ot[0],1,5], center = false);
+
 
   //point = poly[case][resolution];
   a1 = 90;
@@ -91,7 +101,36 @@ for(w = [((left)? a1:a0):((left)? -1:1)*step:((left)? a0:a1)])
   ];
 
   /** 
+    https://math.stackexchange.com/questions/719758/inner-tangent-between-two-circles-formula
+    compute the outer tangent of 2 circles, so as to be able to know how to smooth out 2 concurrent curves
+    c1 need ot be the bigger pone
+    M1M2 distance of the centers
+    delta the angle of the radius of circle 1to the tangent
+    alpha 
+    */
+function outerTangente(c1 = [0,0], r1=10, c2=[20,20], r2=5) =
+  let(
+      M1M2= sqrt((c2[0]-c1[0])^2+(c2[1]-c1[1])^2), //distance between the circles, the hypotenuse
+      phi =  acos((r1-r2)/M1M2), //angle between hypotenuse and inner circle in big circle radius
+      beta =  atan((r1-r2)/M1M2), //angle between hypotenuse and tangent at small circle radius
+      //theta = asin(c2[0]-c1[0]/M1M2), //angle between hypo and y axis,
+      dx = c2[0]-c1[0], //delta x for quadrant computing,
+      dy = c2[1]-c1[1], //delta y for quadrant computing,
+      theta = atan(abs(c2[0]-c1[0])/abs(c2[1]-c1[1])), //angle between hypo and y axis,
+      //thetap = acos(c2[1]-c1[1]/M1M2), //angle between hypo and y axis,
+      alpha = (dx >=0  && dy  >= 0 )? 90-theta //first quadrant
+             :(dx <0  && dy  >= 0 )?90+ theta //2. quadrant
+             :(dx <0  && dy  < 0 )?270- theta //3. quadrant
+             :270+theta                          //4. quadrant  
+     )
+  [
+    M1M2, phi, beta,alpha
+  ];
+  /** 
     compute the inner tangent of 2 circles, so as to be able to know how to smooth out 2 concurrent curves
+    M1M2 distance of the centers
+    delta the angle of the radius of circle 1to the tangent
+    alpha 
     */
 function innerTangente(c1 = [0,0], r1=10, c2=[20,20], r2=5) =
   let(
