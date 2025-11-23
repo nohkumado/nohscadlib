@@ -10,8 +10,7 @@ function bezier_curve(p0, p1, p2, p3, steps=30) =
 [ for (i = [0:steps]) bezier_point(p0, p1, p2, p3, i/steps) ];
 //converts start point angle and rad to a 2D cartesian point, dir is true
 //forward, false backward
-  function polar2point(origin = [0,0], angle = 10, length = 10, dir= true)= [origin[0] + ((dir)?1:-1)*length*cos(angle), origin[1] + ((dir)?1:-1)*length*sin(angle)];
-
+function polar2point(origin = [0,0], angle = 10, length = 10, dir= true)= [origin[0] + ((dir)?1:-1)*length*cos(angle), origin[1] + ((dir)?1:-1)*length*sin(angle)];
 
 //beware open curve!!
 function bezier(
@@ -23,12 +22,10 @@ function bezier(
     end_weight = 30,// Tangentenlänge am Ende
     fn = 30 //smoothness
     ) =
-    let(
-    //p1 = [starp[0] + start_weight*cos(start_angle), starp[1] + start_weight*sin(start_angle)],
-    //p2 = [endp[0] - end_weight*cos(end_angle), endp[1] - end_weight*sin(end_angle)]
-  p1 = polar2point(starp,start_angle,start_weight),
-  p2 = polar2point(endp,end_angle,end_weight, dir= false)
-    ) bezier_curve(starp, p1, p2, endp, fn);
+let(
+    p1 = polar2point(starp,start_angle,start_weight),
+    p2 = polar2point(endp,end_angle,end_weight, dir= false)
+   ) bezier_curve(starp, p1, p2, endp, fn);
 
 module drawBezier(
     starp = [0,0],
@@ -41,7 +38,7 @@ module drawBezier(
     debug = false
     )
 { 
-echo("Endpoint = ",endp);
+  echo("Endpoint = ",endp);
 
   p1 = polar2point(starp,start_angle,start_weight);
   p2 = polar2point(endp,end_angle,end_weight, dir= false);
@@ -61,11 +58,11 @@ echo("Endpoint = ",endp);
 }
 
 module polyline(pts) {
-hull() { translate([pts[0][0],pts[0][1],0]) circle(d=0.6); translate([pts[1][0],pts[1][1],0]) circle(d=0.6); }
-hull() { 
- translate([pts[2][0],pts[2][1],0]) circle(d=0.6); 
- translate([pts[3][0],pts[3][1],0]) circle(d=0.6); 
- }
+  hull() { translate([pts[0][0],pts[0][1],0]) circle(d=0.6); translate([pts[1][0],pts[1][1],0]) circle(d=0.6); }
+  hull() { 
+    translate([pts[2][0],pts[2][1],0]) circle(d=0.6); 
+    translate([pts[3][0],pts[3][1],0]) circle(d=0.6); 
+  }
 }
 function reverse(list) = [for (i = [len(list)-1:-1:0]) list[i]];
 
