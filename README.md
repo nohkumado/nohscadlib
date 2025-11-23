@@ -4,6 +4,7 @@ some common and recurrent functions i need with my openscad project
 
 
 - fillet.scad : to add or create round corners or progressive junctions
+   added the ability to just have a border
 - round.scad: when working with polygons add a configurable number of intermediary points to round up a corner:
     + function roundPoint2D draws a round polygon around a point
     + function outerTangente compute the outer tangents of 2 circles
@@ -15,3 +16,5 @@ some common and recurrent functions i need with my openscad project
     + module picot draw a diamond shape
     + module  picot\_cube draw a raster of pico
 - sweep.scad: create from a vector of cuts a solid by adding planes around the cuts
+- build a wall with heaxagonal cutouts
+![open ball joint](img/hex.png)

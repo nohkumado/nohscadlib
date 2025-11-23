@@ -1,39 +1,44 @@
 height = 200;
 width = 200;
-holes = 10;
+holes = 0;
 spacing =3;
-angle = 10;
+angle = 00;
 wall_thickness = 30;
 point_up = true;
+mitre= 30;
 
 
-hexwand(width = width,  h=height, num_holes=holes, angle=angle, w= wall_thickness, spacing = spacing, point_up = point_up );
+hexwand(width = width,  h=height, num_holes=holes, angle=angle, w= wall_thickness, spacing = spacing, point_up = point_up, mitre=mitre );
 
-module hexwand(width = 10, h=10, w=2, num_holes= 5, angle=0, spacing = 1, point_up=false, center= false)
+module hexwand(width = 10, h=10, w=2, num_holes= 5, angle=0, spacing = 1, point_up=false, center= false, mitre = 90)
 {
   ver_sh = (num_holes >0)?h:h-2*w;
   ver_sp = h+3*w;
   d_ver = 2*w*tan(30);
 
+  mitre0 = (false)? w*cos(mitre):0;
+  mitre1 = (mitre != 90)? w*cos(mitre):0;
+  mitre2 = (mitre != 90)? 2*w*cos(mitre):0;
+
   wand_poly_points = [
-    [0,0,0], [0,width,0], [w,width,0], [w,0,0], //Grund fläche 0 1 2 3
+    [0,0,0], [0,width,0], [w,width+mitre0,0], [w,-mitre0,0], //Grund fläche 0 1 2 3
 
     [ver_sh*sin(angle),-ver_sh*sin(angle),ver_sh], //Start verjüngung 4
-    [ver_sh*sin(angle),width+ver_sh*sin(angle),ver_sh],  // 5
-    [w+ver_sh*sin(angle),width+ver_sh*sin(angle),ver_sh], /// 6
-    [w+ver_sh*sin(angle),-ver_sh*sin(angle),ver_sh], //Ende verjüngung 7 
+[ver_sh*sin(angle),width+ver_sh*sin(angle),ver_sh],  // 5
+    [w+ver_sh*sin(angle),width+ver_sh*sin(angle)+mitre0,ver_sh], /// 6
+    [w+ver_sh*sin(angle),-ver_sh*sin(angle)-mitre0,ver_sh], //Ende verjüngung 7 
 
     if(num_holes <=0)[h*sin(angle),-h*sin(angle),h], //wandhöhe 8
     if(num_holes <=0)[h*sin(angle),width+h*sin(angle),h],  // 9
-    if(num_holes <=0)[w+h*sin(angle),width+h*sin(angle),h],  // 12
-    if(num_holes <=0)[w+h*sin(angle),-h*sin(angle),h], //wandhöhe 13
-    if(num_holes <=0)[w+h*sin(angle)+d_ver,width+h*sin(angle),h],  //10
-    if(num_holes <=0)[w+h*sin(angle)+d_ver,-h*sin(angle),h], //11
+    if(num_holes <=0)[w+h*sin(angle),width+h*sin(angle)+mitre0,h],  // 12
+    if(num_holes <=0)[w+h*sin(angle),-h*sin(angle)-mitre0,h], //wandhöhe 13
+    if(num_holes <=0)[w+h*sin(angle)+d_ver,width+h*sin(angle)+mitre2,h],  //10
+    if(num_holes <=0)[w+h*sin(angle)+d_ver,-h*sin(angle)-mitre2,h], //11
 
-    if(num_holes <=0)[w+ver_sp*sin(angle),-ver_sp*sin(angle),ver_sp], 
-    if(num_holes <=0)[w+ver_sp*sin(angle),width+ver_sp*sin(angle),ver_sp], 
-    if(num_holes <=0)[2*w+ver_sp*sin(angle),width+ver_sp*sin(angle),ver_sp], 
-    if(num_holes <=0)[2*w+ver_sp*sin(angle),-ver_sp*sin(angle),ver_sp], //Start verjüngung 
+    if(num_holes <=0)[w+ver_sp*sin(angle),-ver_sp*sin(angle)-mitre1/3,ver_sp], 
+    if(num_holes <=0)[w+ver_sp*sin(angle),width+ver_sp*sin(angle)+mitre1/3,ver_sp], 
+    if(num_holes <=0)[2*w+ver_sp*sin(angle),width+ver_sp*sin(angle)+mitre2,ver_sp], 
+    if(num_holes <=0)[2*w+ver_sp*sin(angle),-ver_sp*sin(angle)-mitre2,ver_sp], //Start verjüngung 
     ];
 
   wand_poly_faces = [
